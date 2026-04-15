@@ -13,13 +13,20 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $primaryKey = 'npm';
+    public $incrementing = false;
+    protected $keyType = 'integer';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'npm',
+        'username',
+        'first_name',
+        'last_name',
         'email',
         'password',
     ];
@@ -45,5 +52,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function loans()
+    {
+        return $this->hasMany(Loan::class, 'user_npm', 'npm');
     }
 }
