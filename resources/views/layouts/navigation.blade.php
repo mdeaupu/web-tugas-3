@@ -15,6 +15,28 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <!-- Menu Buku -->
+                    <x-nav-link :href="route('books.index')" :active="request()->routeIs('books.*')">
+                        {{ __('Buku') }}
+                    </x-nav-link>
+
+                    <!-- Menu Rak Buku -->
+                    <x-nav-link :href="route('bookshelves.index')" :active="request()->routeIs('bookshelves.*')">
+                        {{ __('Rak Buku') }}
+                    </x-nav-link>
+
+                    <!-- Menu Kategori -->
+                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
+                        {{ __('Kategori') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">User</x-nav-link>
+                    <x-nav-link :href="route('loans.index')"
+                        :active="request()->routeIs('loans.*')">Peminjaman</x-nav-link>
+                    <x-nav-link :href="route('loan_details.index')"
+                        :active="request()->routeIs('loan_details.*')">Detail Pinjam</x-nav-link>
+                    <x-nav-link :href="route('book_returns.index')"
+                        :active="request()->routeIs('book_returns.*')">Pengembalian</x-nav-link>
                 </div>
             </div>
 
@@ -76,6 +98,17 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('books.index')" :active="request()->routeIs('books.*')">
+                {{ __('Buku') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('bookshelves.index')" :active="request()->routeIs('bookshelves.*')">
+                {{ __('Rak Buku') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
+                {{ __('Kategori') }}
             </x-responsive-nav-link>
         </div>
 
