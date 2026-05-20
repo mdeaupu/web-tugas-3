@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UsersExport;
+use App\Imports\UsersImport;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -89,4 +93,36 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }
+
+    public function printPDF()
+    {
+        $users = User::with('roles')->orderBy('npm')->get();
+        $pdf = Pdf::loadView('users.pdf', compact('users'));
+        return $pdf->download('daftar-user.pdf');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new UsersExport(), 'daftar-user.xlsx');
+    }
+
+    public function importForm()
+    {
+        return view('users.import');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048'
+        ]);
+
+        try {
+            Excel::import(new UsersImport(), $request->file('file'));
+            return redirect()->route('users.index')->with('success', 'Data user berhasil diimport.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
 }

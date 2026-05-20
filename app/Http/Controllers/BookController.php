@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BooksExport;
+use App\Imports\BooksImport;
 use App\Models\Book;
 use App\Models\Bookshelf;
 use App\Models\Category;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BookController extends Controller
 {
@@ -91,5 +95,36 @@ class BookController extends Controller
         $book->delete();
 
         return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus.');
+    }
+
+    public function printPDF()
+    {
+        $books = Book::with(['bookshelf', 'category'])->orderBy('created_at', 'desc')->get();
+        $pdf = Pdf::loadView('books.pdf', compact('books'));
+        return $pdf->download('daftar-buku.pdf');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new BooksExport(), 'daftar-buku.xlsx');
+    }
+
+    public function importForm()
+    {
+        return view('books.import');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048'
+        ]);
+
+        try {
+            Excel::import(new BooksImport(), $request->file('file'));
+            return redirect()->route('books.index')->with('success', 'Data buku berhasil diimport.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+        }
     }
 }

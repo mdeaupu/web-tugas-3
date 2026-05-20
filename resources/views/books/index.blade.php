@@ -7,8 +7,19 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="mb-4 flex justify-end">
-                    <a href="{{ route('books.create') }}"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Tambah Buku</a>
+                    <div class="mb-4 flex justify-end space-x-2">
+                        <a href="{{ route('books.create') }}"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Tambah
+                            Buku</a>
+                        <a href="{{ route('books.print-pdf') }}" target="_blank"
+                            class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cetak PDF</a>
+                        <a href="{{ route('books.export-excel') }}"
+                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Export
+                            Excel</a>
+                        <a href="{{ route('books.import-form') }}"
+                            class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Import
+                            Excel</a>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">

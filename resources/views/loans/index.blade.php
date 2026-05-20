@@ -4,8 +4,16 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white p-6 rounded shadow">
                 <div class="mb-4 flex justify-end">
-                    <a href="{{ route('loans.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded">Tambah
-                        Peminjaman</a>
+                    <div class="mb-4 flex justify-end space-x-2">
+                        <a href="{{ route('loans.create') }}"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Tambah
+                            Peminjaman</a>
+                        <a href="{{ route('loans.print-pdf') }}" target="_blank"
+                            class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Cetak PDF</a>
+                        <a href="{{ route('loans.export-excel') }}"
+                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Export
+                            Excel</a>
+                    </div>
                 </div>
                 <table class="min-w-full">
                     <thead>

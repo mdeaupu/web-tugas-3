@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LoansExport;
 use App\Models\Book;
 use App\Models\BookReturn;
 use App\Models\Loan;
 use App\Models\LoanDetail;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LoanController extends Controller
 {
@@ -150,5 +153,17 @@ class LoanController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal mencatat pengembalian.');
         }
+    }
+
+    public function printPDF()
+    {
+        $loans = Loan::with(['user', 'loanDetails.book'])->orderBy('id', 'desc')->get();
+        $pdf = Pdf::loadView('loans.pdf', compact('loans'));
+        return $pdf->download('laporan-peminjaman.pdf');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new LoansExport(), 'laporan-peminjaman.xlsx');
     }
 }

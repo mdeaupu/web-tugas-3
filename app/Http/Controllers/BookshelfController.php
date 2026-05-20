@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BookshelvesExport;
+use App\Imports\BookshelvesImport;
 use App\Models\Bookshelf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BookshelfController extends Controller
 {
@@ -52,5 +56,36 @@ class BookshelfController extends Controller
         }
         $bookshelf->delete();
         return redirect()->route('bookshelves.index')->with('success', 'Rak buku berhasil dihapus.');
+    }
+
+    public function printPDF()
+    {
+        $bookshelves = Bookshelf::orderBy('id')->get();
+        $pdf = Pdf::loadView('bookshelves.pdf', compact('bookshelves'));
+        return $pdf->download('daftar-rak-buku.pdf');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new BookshelvesExport(), 'daftar-rak-buku.xlsx');
+    }
+
+    public function importForm()
+    {
+        return view('bookshelves.import');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048'
+        ]);
+
+        try {
+            Excel::import(new BookshelvesImport(), $request->file('file'));
+            return redirect()->route('bookshelves.index')->with('success', 'Data rak buku berhasil diimport.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BookReturnsExport;
 use App\Models\BookReturn;
 use App\Models\LoanDetail;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BookReturnController extends Controller
 {
@@ -76,5 +79,17 @@ class BookReturnController extends Controller
     {
         $bookReturn->delete();
         return redirect()->route('book_returns.index')->with('success', 'Data pengembalian dihapus.');
+    }
+
+    public function printPDF()
+    {
+        $returns = BookReturn::with('loanDetail.book', 'loanDetail.loan.user')->orderBy('id', 'desc')->get();
+        $pdf = Pdf::loadView('book_returns.pdf', compact('returns'));
+        return $pdf->download('laporan-pengembalian.pdf');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new BookReturnsExport(), 'laporan-pengembalian.xlsx');
     }
 }
